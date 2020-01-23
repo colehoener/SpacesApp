@@ -1,7 +1,0 @@
-{
-  "name": "GoogleMapsIonic",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}
