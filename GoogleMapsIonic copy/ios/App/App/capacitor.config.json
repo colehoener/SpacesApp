@@ -1,6 +1,6 @@
 {
   "appId": "io.ionic.starter",
-  "appName": "Spaces",
+  "appName": "GoogleMapsIonic",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
