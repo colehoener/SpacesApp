@@ -31,8 +31,9 @@ export class HomePage {
   locationsCollection: AngularFirestoreCollection<any>;
   user = null;
 
-  
+  //creates new view
   @ViewChild('map', {static: false}) mapElement: ElementRef;
+
   //global variables
   lat: number;
   lng: number;
@@ -46,45 +47,65 @@ export class HomePage {
 
   //On startup of homepage this runs
   ionViewWillEnter() {
-   this.loadMap();
+    this.getUserLocation();
   }
   
-  //Loads map
-  loadMap(){
-    //Updates current location if there is a loction change
-      /*let watch = this.geolocation.watchPosition();
-        watch.subscribe((data) => {
-          // data can be a set of coordinates, or an error (if an error occurred).
-          this.lat = data.coords.latitude
-          this.lng = data.coords.longitude
-      });*/
-
-    //Gets current loction of user
+  getUserLocation(){
+    console.log("Ran getUserLocation().")
     this.geolocation.getCurrentPosition().then((resp) => {
+      this.lat = resp.coords.latitude
+      this.lng = resp.coords.longitude
+      console.log("Ran geolocation.")
       let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+      this.loadMap(latLng);
+    });
+    console.log("failed")
+  }
+
+  //Loads map
+  loadMap(latLng){
       let mapOptions = {
         center: latLng,
         zoom: 15,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        
+        fullscreenControl: false,
+        mapTypeControl: false,
+        streetViewControl: false
       }
+
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
+      //Updates current location if there is a loction change
+      let watch = this.geolocation.watchPosition();
+
+      watch.subscribe((data) => {
+          // data can be a set of coordinates, or an error (if an error occurred).
+          this.lat = data.coords.latitude
+          this.lng = data.coords.longitude
+          this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+          let currentMarker = new google.maps.Marker({
+            map: this.map,
+            position: latLng,
+            //icon : myLocationIcon
+          });
+
+          console.log("Location updated.")
+      });
+      
       //Draws icon (placeholder)
       var myLocationIcon = {
         path: 'M11 11l1.256 5 3.744-10-10 3.75 5 1.25zm1-11c-5.522 0-10 4.395-10 9.815 0 5.505 4.375 9.268 10 14.185 5.625-4.917 10-8.68 10-14.185 0-5.42-4.478-9.815-10-9.815zm0 18c-4.419 0-8-3.582-8-8s3.581-8 8-8 8 3.582 8 8-3.581 8-8 8z',
         scale: 1,
         fillColor: '#3a84df'
-      };
+      }
       
       //Creates a marker
       var marker = new google.maps.Marker({
         map: this.map,
         animation: google.maps.Animation.DROP,
         position: latLng,
-        icon : myLocationIcon
+        //icon : myLocationIcon
       });
-    });
   }
   
   //Firebase login

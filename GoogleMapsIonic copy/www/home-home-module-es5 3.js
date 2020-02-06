@@ -2528,7 +2528,7 @@ var Toast = new ToastPluginWeb();
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<ion-header>\n  <ion-toolbar color=\"secondary\">\n    <ion-title>\n      Spaces\n    </ion-title>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <div #map id=\"map\" [hidden]=\"!user\"></div>\n</ion-content>\n"
+module.exports = "<ion-header>\n  <ion-toolbar color=\"dark\">\n    <ion-title>\n      Spaces\n    </ion-title>\n  </ion-toolbar>\n</ion-header>\n\n<ion-content>\n  <div #map id=\"map\" [hidden]=\"!user\"></div>\n\n  <body style=\"background-color:rgb(39, 39, 39);\">\n  \n    <br>\n    <br>\n    <p style=\"text-align:center; color: rgb(255, 255, 255);\">Parking information displays here</p>\n  \n  </body>\n</ion-content>\n"
 
 /***/ }),
 
@@ -2589,7 +2589,7 @@ var HomePageModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "#map {\n  width: 100%;\n  height: 300px;\n  display: contents;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9jb2xlaG9lbmVyL0RvY3VtZW50cy9Db2xsZWdlL0ZhbGwgUSAyMDE5L0NJLTEwMi9Qcm90b3R5cGUvR29vZ2xlTWFwc0lvbmljL3NyYy9hcHAvaG9tZS9ob21lLnBhZ2Uuc2NzcyIsInNyYy9hcHAvaG9tZS9ob21lLnBhZ2Uuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFdBQUE7RUFDQSxhQUFBO0VBQ0EsaUJBQUE7QUNDSiIsImZpbGUiOiJzcmMvYXBwL2hvbWUvaG9tZS5wYWdlLnNjc3MiLCJzb3VyY2VzQ29udGVudCI6WyIjbWFwIHtcbiAgICB3aWR0aDogMTAwJTtcbiAgICBoZWlnaHQ6IDMwMHB4O1xuICAgIGRpc3BsYXk6IGNvbnRlbnRzO1xufSIsIiNtYXAge1xuICB3aWR0aDogMTAwJTtcbiAgaGVpZ2h0OiAzMDBweDtcbiAgZGlzcGxheTogY29udGVudHM7XG59Il19 */"
+module.exports = "#map {\n  width: 100%;\n  height: 65%;\n}\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi9Vc2Vycy9jb2xlaG9lbmVyL0RvY3VtZW50cy9Db2xsZWdlL0ZhbGwgUSAyMDE5L0NJLTEwMi9Qcm90b3R5cGUvR29vZ2xlTWFwc0lvbmljL3NyYy9hcHAvaG9tZS9ob21lLnBhZ2Uuc2NzcyIsInNyYy9hcHAvaG9tZS9ob21lLnBhZ2Uuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNJLFdBQUE7RUFDQSxXQUFBO0FDQ0oiLCJmaWxlIjoic3JjL2FwcC9ob21lL2hvbWUucGFnZS5zY3NzIiwic291cmNlc0NvbnRlbnQiOlsiI21hcCB7XG4gICAgd2lkdGg6IDEwMCU7XG4gICAgaGVpZ2h0OiA2NSU7XG59IiwiI21hcCB7XG4gIHdpZHRoOiAxMDAlO1xuICBoZWlnaHQ6IDY1JTtcbn0iXX0= */"
 
 /***/ }),
 
@@ -2626,10 +2626,10 @@ var HomePage = /** @class */ (function () {
         this.loadMap();
     };
     HomePage.prototype.loadMap = function () {
-        var latLng = new google.maps.LatLng(39.9526, -75.1764);
+        var latLng = new google.maps.LatLng(39.9566, -75.1955);
         var mapOptions = {
             center: latLng,
-            zoom: 20,
+            zoom: 18,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
