@@ -1,9 +1,8 @@
 {
-  "name": "GoogleMapsIonic",
+  "name": "Spaces",
   "integrations": {
-    "capacitor": {},
-    "cordova": {}
+    "cordova": {},
+    "capacitor": {}
   },
-  "type": "angular",
-  "id": "58dba0e4"
+  "type": "angular"
 }

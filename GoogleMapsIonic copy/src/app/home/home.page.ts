@@ -30,7 +30,7 @@ export class HomePage {
   locations: Observable<any>;
   locationsCollection: AngularFirestoreCollection<any>;
   user = null;
-
+  mapOpen: boolean = true;
   //creates new view
   @ViewChild('map', {static: false}) mapElement: ElementRef;
 
@@ -45,40 +45,14 @@ export class HomePage {
     this.anonLogin();
   }
 
+  segmentChanged(ev: any) {
+      this.mapOpen = !this.mapOpen;
+  }
+  
   //On startup of homepage this runs
   ionViewWillEnter() {
     let latLng = new google.maps.LatLng(39.9566, -75.1899);
     this.loadMap(latLng)
-  }
-  
-  getUserLocation(){
-    console.log("Ran getUserLocation().")
-    this.geolocation.getCurrentPosition().then((resp) => {
-      this.lat = resp.coords.latitude
-      this.lng = resp.coords.longitude
-      console.log("Ran geolocation.")
-      let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-      
-      var userMarkerImage = {
-        url: '/assets/redDot.png',
-        size: new google.maps.Size(20, 20),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(11, 11),
-        scaledSize: new google.maps.Size(20, 20)
-      };
-
-      let currentMarker = new google.maps.Marker({
-        map: this.map,
-        position: latLng,
-        icon : userMarkerImage
-      });
-    
-      //zooms to user current location
-      this.map.setZoom(15);
-      this.map.setCenter(currentMarker.getPosition());
-
-      this.directions(new google.maps.LatLng(39.956587, -75.204674))
-    });
   }
 
   //Loads map
@@ -355,6 +329,35 @@ export class HomePage {
 
   }
 
+  getUserLocation(){
+    this.geolocation.getCurrentPosition().then((resp) => {
+      this.lat = resp.coords.latitude
+      this.lng = resp.coords.longitude
+      console.log("Ran getUserLocation() with cordinates:", this.lat, this.lng)
+      let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
+      
+      var userMarkerImage = {
+        url: '/assets/redDot.png',
+        size: new google.maps.Size(20, 20),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(11, 11),
+        scaledSize: new google.maps.Size(20, 20)
+      };
+
+      let currentMarker = new google.maps.Marker({
+        map: this.map,
+        position: latLng,
+        icon : userMarkerImage
+      });
+    
+      //zooms to user current location
+      this.map.setZoom(15);
+      this.map.setCenter(currentMarker.getPosition());
+
+      //this.directions(new google.maps.LatLng(39.956587, -75.204674))
+    });
+  }
+
   //Watches for position changes
   watchPositionChange(){
     let watch = this.geolocation.watchPosition();
@@ -371,7 +374,7 @@ export class HomePage {
             //icon : myLocationIcon
           });
 
-          console.log("Location updated.")
+          console.log("Location updated with cordinates:", this.lat, this.lng)
       });
   }
 
@@ -414,6 +417,22 @@ export class HomePage {
         console.log("Clicked Marker")
       });
   }
+  
+  /*codeAddress() {
+    geocoder = new google.maps.Geocoder();
+    //var address = document.getElementById('address').value;
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == 'OK') {
+        this.map.setCenter(results[0].geometry.location);
+        var marker = new google.maps.Marker({
+            map: this.map,
+            position: results[0].geometry.location
+        });
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+  }*/
   
   //Firebase login
   anonLogin(){

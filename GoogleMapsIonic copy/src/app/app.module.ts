@@ -4,10 +4,11 @@ import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+//import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { AboutPageModule } from './about/about.module'
 
 import { environment } from '../environments/environment';
 
@@ -20,12 +21,12 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, 
+  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, AboutPageModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     AngularFireAuthModule],
   providers: [
-    StatusBar,
+    //StatusBar,
     SplashScreen,
     Geolocation,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

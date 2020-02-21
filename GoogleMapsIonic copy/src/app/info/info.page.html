@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+  	    <ion-back-button></ion-back-button>
+  	</ion-buttons>
+  	<ion-title>
+        Park-N-Park
+    </ion-title>
+    <ion-buttons slot="end">
+        <ion-button slot="end" [routerLink]="['/settings']">
+            <ion-icon name="settings"></ion-icon>
+        </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="ion-padding">
+  	<ion-grid>
+  	    <ion-row>
+            <ion-col>
+                <ion-label class="data-head">Address:</ion-label>
+                <ion-label #addressLabel>555 5th St</ion-label>
+                <br>
+                <ion-label class="data-head">Phone: </ion-label>
+                <ion-label #phoneLabel>555-555-5555</ion-label>
+                <br><br>
+                <ion-button>Website</ion-button>
+                <ion-button>Directions</ion-button>
+                <br><br>
+                <ion-label class="data-head">Posted Hours: </ion-label>
+                <ion-label #hoursLabel>24/7</ion-label>
+                <br>
+                <ion-label class="data-head">Access: </ion-label>
+                <ion-label #permitLabel>Permit required</ion-label>
+            </ion-col>
+            <ion-col text-right>
+                <ion-icon name="pin"></ion-icon><ion-label>&nbsp;</ion-label>
+                <ion-label #distanceLabel>0.0mi</ion-label><ion-label> away</ion-label>
+            </ion-col>
+  	    </ion-row>
+  	    <ion-row>
+            <ion-col>
+                <ion-label class="data-head">Your Rating:</ion-label>
+                <!--ionic4-star-rating #rating
+                    activeIcon = "star"
+                    defaultIcon = "star-outline"
+                    halfIcon = "star-half"
+                    activeColor = "#488aff"
+                    defaultColor = "#488aff"
+                    readonly="false"
+                    halfStar="true"
+                    rating="3.5"
+                    fontSize = "30px">
+                </ionic4-star-rating-->
+                <ion-label class="data-head">Our Rating:</ion-label>
+                <!--ionic4-star-rating #rating
+                    activeIcon = "star"
+                    defaultIcon = "star-outline"
+                    halfIcon = "star-half"
+                    activeColor = "#f4f4f4"
+                    defaultColor = "#f4f4f4"
+                    readonly="true"
+                    halfStar="true"
+                    rating="2"
+                    fontSize = "30px">
+                </ionic4-star-rating-->
+                <ion-label class="data-head">Google's Rating:</ion-label>
+                <!--ionic4-star-rating #grating
+                    activeIcon = "star"
+                    defaultIcon = "star-outline"
+                    halfIcon = "star-half"
+                    activeColor = "#f4f4f4"
+                    defaultColor = "#f4f4f4"
+                    readonly="true"
+                    halfStar="true"
+                    rating="3.5"
+                    fontSize = "30px">
+                </ionic4-star-rating-->
+            </ion-col>
+            <ion-col text-right>
+                <ion-button>Mark Full</ion-button>
+            </ion-col>
+  	    </ion-row>
+  	</ion-grid>
+    Data goes down here.
+  </div>
+</ion-content>

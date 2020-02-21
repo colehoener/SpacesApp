@@ -1,21 +1,31 @@
 <ion-header>
-  <ion-toolbar color="dark">
-    <ion-title>
-      Spaces
-    </ion-title>
+  <ion-toolbar>
+    <ion-searchbar placeholder="Enter a location..."></ion-searchbar>
+    <ion-buttons slot="end">
+        <ion-button>
+            <ion-icon name="locate"></ion-icon>
+        </ion-button>
+        <ion-button [routerLink]="['/settings']">
+            <ion-icon name="settings"></ion-icon>
+        </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    
-  <div #map id="map" [hidden]="!user"></div>
-  
-
-  <body style="background-color:rgb(39, 39, 39);">
-  
-    <br>
-    <br>
-    <p style="text-align:center; color: rgb(255, 255, 255);">Parking information displays here</p>
-  
-  </body>
+  <div class="ion-padding">
+    <ion-segment (ionChange)="segmentChanged($event)" value="map">
+      <ion-segment-button value="map">
+        <ion-icon name="map"></ion-icon>
+      </ion-segment-button>
+      <ion-segment-button value="list">
+        <ion-icon name="list"></ion-icon>
+      </ion-segment-button>
+    </ion-segment>
+    <div #map id="map"></div>
+    <div *ngIf="!mapOpen" #listView>
+        List view goes here.
+    </div>
+    <ion-button [routerLink]="['/info']">Test info page</ion-button>
+  </div>
 </ion-content>
