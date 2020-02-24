@@ -352,9 +352,7 @@ export class HomePage {
     
       //zooms to user current location
       this.map.setZoom(15);
-      this.map.setCenter(currentMarker.getPosition());
-
-      //this.directions(new google.maps.LatLng(39.956587, -75.204674))
+      this.map.panTo(currentMarker.getPosition());
     });
   }
 

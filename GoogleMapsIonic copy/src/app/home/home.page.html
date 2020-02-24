@@ -2,7 +2,7 @@
   <ion-toolbar>
     <ion-searchbar placeholder="Enter a location..."></ion-searchbar>
     <ion-buttons slot="end">
-        <ion-button>
+        <ion-button (click) = "getUserLocation()">
             <ion-icon name="locate"></ion-icon>
         </ion-button>
         <ion-button [routerLink]="['/settings']">
@@ -22,10 +22,10 @@
         <ion-icon name="list"></ion-icon>
       </ion-segment-button>
     </ion-segment>
-    <div #map id="map"></div>
+  </div>
+    <div #map id="map" *ngIf="mapOpen"></div>
     <div *ngIf="!mapOpen" #listView>
         List view goes here.
     </div>
     <ion-button [routerLink]="['/info']">Test info page</ion-button>
-  </div>
 </ion-content>
