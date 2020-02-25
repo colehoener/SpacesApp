@@ -1,5 +1,5 @@
 {
-  "appId": "io.ionic.starter",
+  "appId": "dev.teamcosmos.Spaces",
   "appName": "Spaces",
   "bundledWebRuntime": false,
   "npmClient": "npm",
