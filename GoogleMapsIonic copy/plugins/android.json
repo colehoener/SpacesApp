@@ -1,0 +1,31 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "dev.teamcosmos.Spaces"
+    },
+    "cordova-plugin-ionic-keyboard": {
+      "PACKAGE_NAME": "dev.teamcosmos.Spaces"
+    },
+    "cordova-plugin-ionic-webview": {
+      "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+",
+      "PACKAGE_NAME": "dev.teamcosmos.Spaces"
+    },
+    "cordova-plugin-splashscreen": {
+      "PACKAGE_NAME": "dev.teamcosmos.Spaces"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "dev.teamcosmos.Spaces"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "dev.teamcosmos.Spaces"
+    }
+  },
+  "dependent_plugins": {}
+}
