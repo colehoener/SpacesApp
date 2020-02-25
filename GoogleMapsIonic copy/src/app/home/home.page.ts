@@ -33,7 +33,6 @@ export class HomePage {
   mapOpen: boolean = true;
   //creates new view
   @ViewChild('map', {static: false}) mapElement: ElementRef;
-
   //global variables
   lat: number;
   lng: number;
