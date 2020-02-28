@@ -6,3 +6,28 @@
 .data-head + ion-label {
 	margin-left: 1em;
 }
+
+.rating {
+	font-size: 40px;
+	max-width: 5em;
+	width: 5em;
+	height: 1em;
+	--knob-background: transparent;
+	--bar-height: 1em;
+	padding: 0;
+	z-index: 0;
+}
+.rating_after {
+	background: var(--ion-background-color);
+	color: white;
+	mix-blend-mode: darken;
+	font-size: 40px;
+	margin-top: -1.1em;
+	height: 1.1em;
+	width: 5em;
+	pointer-events: none;
+	z-index: 97;
+	text-justify: inter-character;
+	text-align: justify;
+	text-align-last: justify;
+}

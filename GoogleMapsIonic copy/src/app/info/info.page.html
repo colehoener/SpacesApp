@@ -42,17 +42,18 @@
   	    <ion-row>
             <ion-col>
                 <ion-label class="data-head">Your Rating:</ion-label>
-                <!--ionic4-star-rating #rating
-                    activeIcon = "star"
-                    defaultIcon = "star-outline"
-                    halfIcon = "star-half"
-                    activeColor = "#488aff"
-                    defaultColor = "#488aff"
-                    readonly="false"
-                    halfStar="true"
-                    rating="3.5"
-                    fontSize = "30px">
-                </ionic4-star-rating-->
+                <ion-range class="rating"
+                    min="0"
+                    max="5"
+                    snaps="true"
+                    step="0.5"
+                    ticks="false"
+                    mode="md"
+                    value="3.5">
+                </ion-range>
+                <div class="rating_after">
+                    &#9733;&#9733;&#9733;&#9733;&#9733;
+                </div>
                 <ion-label class="data-head">Our Rating:</ion-label>
                 <!--ionic4-star-rating #rating
                     activeIcon = "star"
