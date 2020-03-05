@@ -7,15 +7,19 @@
 	margin-left: 1em;
 }
 
-.rating {
-	font-size: 8vw;
+
+.rating, .rating_after {
+	font-size: min(8vw,40px);
 	max-width: 5em;
+	min-width: 5em;
 	width: 5em;
 	height: 1.1em;
+}
+.rating {
 	--knob-background: transparent;
 	--bar-height: 1.1em;
 	padding: 0;
-	z-index: 0;
+	z-index: 95;
 	--bar-background: var(--ion-background-color);
 	&.disabled {
 		pointer-events: none;
@@ -23,10 +27,7 @@
 	}
 }
 .rating_after {
-	font-size: 8vw;
 	margin-top: -1.1em;
-	height: 1.1em;
-	width: 5em;
 	pointer-events: none;
 	text-justify: inter-character;
 	text-align: justify;
