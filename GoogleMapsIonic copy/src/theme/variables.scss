@@ -1,6 +1,11 @@
 // Ionic Variables and Theming. For more info, please see:
 // http://ionicframework.com/docs/theming/
 
+div.popover-content {
+	--width: min(85vw,300px);
+	left: max(7.5vw, calc(50vw - 150px)) !important;
+}
+
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
