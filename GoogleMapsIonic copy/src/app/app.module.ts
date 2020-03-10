@@ -17,6 +17,9 @@ import { AngularFireAuthModule, AngularFireAuth } from '@angular/fire/auth';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 
+import { SQLitePorter } from '@ionic-native/sqlite-porter/ngx';
+import { SQLite } from '@ionic-native/sqlite/ngx';
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],

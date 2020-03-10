@@ -4,13 +4,15 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Geolocation } from  '@ionic-native/geolocation/ngx';
-
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
 import { HomePage } from './home.page';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
+	HttpClientModule,  
+	FormsModule,
     IonicModule,
     RouterModule.forChild([
       {
@@ -20,6 +22,6 @@ import { HomePage } from './home.page';
     ])
   ],
   declarations: [HomePage],
-  providers: [Geolocation]
+  providers: [Geolocation, SQLite]
 })
 export class HomePageModule {}

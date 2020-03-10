@@ -1,8 +1,8 @@
 /*
 Title: Home Page classes
 Purpose: Script active features for application
-Version/Date: Version 1.2 01/28/2020
-Author(s): Cole Hoener
+Version/Date: Version 1.3 03/10/2020
+Author(s): Cole Hoener, Zak McConnell
 Dependencies: Below
 */
 
@@ -13,9 +13,12 @@ import { Observable } from 'rxjs';
 import { AngularFirestoreCollection, AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
+import { HttpClient } from '@angular/common/http';
 
 //const {Geolocation } = Plugins;
 
+declare let window: any;
 declare var google;
 
 //selects the applied files to interact with
@@ -38,17 +41,25 @@ export class HomePage {
   lat: number;
   lng: number;
   map: any;
-  markers = []
+	markers = [];
+	db: any;
+    
 
   //Main constructor (code goes here)
-  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private geolocation: Geolocation) {
-    this.anonLogin();
-  }
+  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private geolocation: Geolocation, private sqlite: SQLite, private http: HttpClient) {
+	  this.anonLogin();
+	  }
 
   //On startup of homepage this runs
   ionViewWillEnter() {
     let latLng = new google.maps.LatLng(39.9566, -75.1899);
-    this.loadMap(latLng)
+	  this.openDB().then((db) => this.db=db)
+		  .then(() => this.initDB())
+		  .then(() => this.getGarageIds())
+		  .then((ids) => this.getGarageAddress(ids[0]))
+		  .then((address) => console.log('Address: ' + address))
+		  .catch(e => console.log(e));
+	  this.loadMap(latLng);
   }
   
   getUserLocation(){
@@ -428,4 +439,90 @@ export class HomePage {
       
     })
   }
+
+  async openDB() {
+	if (window.cordova.platformId === 'browser') {
+		var db = await window.openDatabase('garages', '1.0', 'Data', 2*1024*1024);
+		console.log('Opened DB.')
+		return db;
+	}
+  }
+
+  async initDB() {
+	  // Get 'garages.sql' text
+	  var script = await this.http.get('../../assets/garages.sql', {responseType: 'text'}).toPromise();
+	  var commands = script.split(";");
+	  if (window.cordova.platformId === 'browser') {
+		  for (var command of commands) {
+			  await this.execSQL(command);
+		  }
+		  console.log('Initialized DB.');
+  	  }
+		  /*else {
+		this.sqlite.create({
+			name: 'garages.db',
+			location: 'default'
+		})
+			.then((db: SQLiteObject) => {
+				db.executeSql(script, [])
+					.then(() => console.log('Executed SQL'))
+					.catch(e => console.log(e));
+			})
+			.catch(e => console.log(e));
+	  }*/
+	  //	  console.log('Loaded DB.');
+	  // return db;
+	  
+  }
+	
+
+	// get all garageIDs
+	async getGarageIds() {
+		var results = await this.execSQL('SELECT garageID FROM Garage');
+		if(results instanceof Array) {
+			results = results.map(res => res.garageID);
+		}
+		else {
+			console.log('This shouldn\'t happen.');
+		}
+		return results;
+	}
+
+	// get address of garage
+	async getGarageAddress(garageID) {
+		var results = await this.execSQL('SELECT address FROM Garage WHERE garageID = ' + garageID);
+		if(results instanceof Array) {
+			results = results.map(res => res.address);
+		}
+		else {
+			console.log('This shouldn\'t happen.');
+		}
+		return results[0];
+	}
+
+	//exec Sql callback wrapper
+	async execSQL(command) {
+		var db = this.db;
+		return new Promise(function(resolve, reject) {
+			var data = [];
+			db.transaction(function(tx) {
+				console.log(command);
+				tx.executeSql(command, [], function(tx, results) {
+					for (var i = 0; i < results.rows.length; i++) {
+						data.push(results.rows.item(i));
+					}
+				}, function(tx, error) {
+					console.log('SQL ERROR: ' + error.message);
+				});
+			}, function(error) {
+				console.log('Transaction ERROR: ' + error.message);
+				reject(error);
+			}, function() {
+				console.log('Transaction executed.');
+				resolve(data);
+			});
+		});
+		
+	}
+
 }
