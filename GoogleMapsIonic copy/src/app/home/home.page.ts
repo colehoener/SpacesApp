@@ -15,11 +15,16 @@ import { AngularFireModule } from '@angular/fire';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
 import { HttpClient } from '@angular/common/http';
+import { Platform } from '@ionic/angular';
 
 //const {Geolocation } = Plugins;
 
 declare let window: any;
 declare var google;
+var geocoder;	
+var map;	
+var searchBarMarkers = []	
+var searchBarI = 0
 
 //selects the applied files to interact with
 @Component({
@@ -32,6 +37,7 @@ declare var google;
 export class HomePage {
   locations: Observable<any>;
   locationsCollection: AngularFirestoreCollection<any>;
+  mapOpen: boolean = true;
   user = null;
 
   //creates new view
@@ -41,14 +47,18 @@ export class HomePage {
   lat: number;
   lng: number;
   map: any;
-	markers = [];
-	db: any;
+  markers = [];
+  db: any;
     
 
   //Main constructor (code goes here)
-  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore, private geolocation: Geolocation, private sqlite: SQLite, private http: HttpClient) {
-	  this.anonLogin();
+  constructor(public platform: Platform, private geolocation: Geolocation, private sqlite: SQLite, private http: HttpClient) {
+
 	  }
+	
+  segmentChanged(ev: any) {	
+    this.mapOpen = !this.mapOpen;	
+  }
 
   //On startup of homepage this runs
   ionViewWillEnter() {
@@ -94,8 +104,7 @@ export class HomePage {
 
   //Loads map
   loadMap(latLng){
-    var directionsService = new google.maps.DirectionsService();
-    var directionsRenderer = new google.maps.DirectionsRenderer();
+    geocoder = new google.maps.Geocoder();
 
     this.getUserLocation()
 
@@ -358,34 +367,97 @@ export class HomePage {
       mapTypeControl: false
     }
 
-    this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+    map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+	  
+    let latLng2 = new google.maps.LatLng(39.9566, -75.1899);	
+    this.addMarker("Test", latLng2)	
+  }	
 
-    let latLng2 = new google.maps.LatLng(39.956587, -75.204674);
+  //Gets the users current location. Displays it on the map and zooms to the location	
+  getUserLocation(){	
+    console.log("Ran getuserLocation() NEW UPDATED")	
+    this.platform.ready().then((readySource) => {
 
-    this.addMarker("Test", latLng2)
+    this.geolocation.getCurrentPosition().then((resp) => {
+	this.lat = resp.coords.latitude	
+        this.lng = resp.coords.longitude	
 
+      console.log(this.lat, this.lng)
+	    
+    let latLng = new google.maps.LatLng(this.lat, this.lng);
+    //declares current location marker	
+      var userMarkerImage = {	
+        url: '/assets/redDot.png',	
+        size: new google.maps.Size(20, 20),	
+        origin: new google.maps.Point(0, 0),	
+        anchor: new google.maps.Point(11, 11),	
+        scaledSize: new google.maps.Size(20, 20)	
+      };	
+
+      //Sets current location marker	
+      let currentMarker = new google.maps.Marker({	
+        map: map,	
+        position: latLng,	
+        icon : userMarkerImage	
+      });	
+
+      console.log("Got user cordinates")	
+      //zooms to user current location	
+      map.setZoom(15);	
+      map.panTo(currentMarker.getPosition());	
+      this.watchPositionChange()	
+    }).catch((error) => {	
+    console.log('Error getting location', error);	
+    });	
+  });	
+  }
+  
+  getDistance(lat1, lng1, lat2, lng2){	
+    var distanceInMeters = google.maps.geometry.spherical.computeDistanceBetween(	
+      new google.maps.LatLng({	
+          lat: 7.099473939079819, 	
+          lng: -73.10677064354888	
+      }),	
+      new google.maps.LatLng({	
+          lat: 4.710993389138328, 	
+          lng: -74.07209873199463	
+      })	
+    );	
+
+    let distanceInMiles = distanceInMeters * 0.000621371	
+
+    return distanceInMiles
   }
 
-  //Watches for position changes
+  //Watches for position changes and updates current location
   watchPositionChange(){
     let watch = this.geolocation.watchPosition();
-
+    console.log("Ran watch position change")
     watch.subscribe((data) => {
         // data can be a set of coordinates, or an error (if an error occurred).
         this.lat = data.coords.latitude
         this.lng = data.coords.longitude
         let latLng = new google.maps.LatLng(data.coords.latitude, data.coords.longitude);
+	    
+	var userMarkerImage = {	
+          url: '/assets/redDot.png',	
+          size: new google.maps.Size(20, 20),	
+          origin: new google.maps.Point(0, 0),	
+          anchor: new google.maps.Point(11, 11),	
+          scaledSize: new google.maps.Size(20, 20)	
+        };
 
         let currentMarker = new google.maps.Marker({
-            map: this.map,
+            map: map,
             position: latLng,
-            //icon : myLocationIcon
+            icon : userMarkerImage
           });
 
-          console.log("Location updated.")
+          console.log("Location updated with cordinates:", this.lat, this.lng)
       });
   }
 
+  //Gets directions to the given endpoint (lattitude and longitude) from current location
   directions(endPoint){
 
     var directionsService = new google.maps.DirectionsService();
@@ -394,7 +466,7 @@ export class HomePage {
 
     let start = new google.maps.LatLng(this.lat, this.lng)
 
-    directionsRenderer.setMap(this.map);
+    directionsRenderer.setMap(map);
 
     var request = {
       origin: start,
@@ -409,37 +481,60 @@ export class HomePage {
       }
     });
   }
-
+  //Adds a marker to the map given the position as lattitude and longitude
   addMarker(title, position){
-      var myLatlng = new google.maps.LatLng(39.956587, -75.194674);
-      var marker = new google.maps.Marker({
+      let marker = new google.maps.Marker({
         //map: this.map,
         animation: google.maps.Animation.DROP,
         position: position,
         title: title
       });
 
-      marker.setMap(this.map);
-
+      marker.setMap(map);
+      //On marker click do this
       marker.addListener('click', function() {
         console.log("Clicked Marker")
       });
   }
   
-  //Firebase login
-  anonLogin(){
-    this.afAuth.auth.signInAnonymously().then(user => {
-      console.log(user);
-      this.user = user;
-
-      this.locationsCollection = this.afs.collection(
-        'locations/${this.user.uid}/track',
-        ref => ref.orderBy('timestamp')
-      );
-      
-    })
+  /*Given an address, this function returns the lattitude and longitude
+    of the address if the address is valid*/
+  geocode(address) {
+    geocoder.geocode( { 'address': address}, function(results, status) {
+      if (status == 'OK') {
+            return results[0].geometry.location	
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
   }
 
+  searchBar(address){
+    if(searchBarI > 0){
+      searchBarMarkers[searchBarI - 1].setMap(null)
+    }
+
+    geocoder.geocode( { 'address': address.srcElement.value}, function(results, status) {
+      if (status == 'OK') {
+        console.log(searchBarI)
+        searchBarMarkers[searchBarI] = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location
+        });
+        map.panTo(searchBarMarkers[searchBarI].getPosition());
+        searchBarI += 1
+      } else {
+        alert('Geocode was not successful for the following reason: ' + status);
+      }
+    });
+	  
+  displayGarages(garagesAddresses, key){
+    for(let i = 0; i < garagesAddresses.length(); i++){
+      let cordinates = this.geocode(garagesAddresses[i])
+      this.addMarker(key[i], cordinates)
+    }
+  }
+	
   async openDB() {
 	if (window.cordova.platformId === 'browser') {
 		var db = await window.openDatabase('garages', '1.0', 'Data', 2*1024*1024);
