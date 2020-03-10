@@ -26,7 +26,7 @@
   "cordova-plugin-splashscreen": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-splashscreen@5.0.2"
+      "id": "cordova-plugin-splashscreen@^5.0.2"
     },
     "is_top_level": true,
     "variables": {}
@@ -43,6 +43,14 @@
     "source": {
       "type": "registry",
       "id": "cordova-plugin-ionic-keyboard@^2.0.5"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "cordova-plugin-geolocation": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-geolocation@4.0.2"
     },
     "is_top_level": true,
     "variables": {}

@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar>
-    <ion-searchbar placeholder="Enter a location..."></ion-searchbar>
+    <ion-searchbar [(ngModel)]="queryText" (change)="searchBar($event)" placeholder="Enter a location..."></ion-searchbar>
     <ion-buttons slot="end">
         <ion-button (click) = "getUserLocation()">
             <ion-icon name="locate"></ion-icon>

@@ -25,6 +25,9 @@
     },
     "cordova-plugin-whitelist": {
       "PACKAGE_NAME": "dev.teamcosmos.Spaces"
+    },
+    "cordova-plugin-geolocation": {
+      "PACKAGE_NAME": "dev.teamcosmos.Spaces"
     }
   },
   "dependent_plugins": {}
