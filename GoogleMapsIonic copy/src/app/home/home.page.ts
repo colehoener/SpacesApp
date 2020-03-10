@@ -72,35 +72,7 @@ export class HomePage {
 	  this.loadMap(latLng);
   }
   
-  getUserLocation(){
-    console.log("Ran getUserLocation().")
-    this.geolocation.getCurrentPosition().then((resp) => {
-      this.lat = resp.coords.latitude
-      this.lng = resp.coords.longitude
-      console.log("Ran geolocation.")
-      let latLng = new google.maps.LatLng(resp.coords.latitude, resp.coords.longitude);
-      
-      var userMarkerImage = {
-        url: '/assets/redDot.png',
-        size: new google.maps.Size(20, 20),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(11, 11),
-        scaledSize: new google.maps.Size(20, 20)
-      };
-
-      let currentMarker = new google.maps.Marker({
-        map: this.map,
-        position: latLng,
-        icon : userMarkerImage
-      });
-    
-      //zooms to user current location
-      this.map.setZoom(15);
-      this.map.setCenter(currentMarker.getPosition());
-
-      this.directions(new google.maps.LatLng(39.956587, -75.204674))
-    });
-  }
+  
 
   //Loads map
   loadMap(latLng){
@@ -526,7 +498,8 @@ export class HomePage {
       } else {
         alert('Geocode was not successful for the following reason: ' + status);
       }
-    });
+	});
+  }
 	  
   displayGarages(garagesAddresses, key){
     for(let i = 0; i < garagesAddresses.length(); i++){
