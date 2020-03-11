@@ -640,7 +640,7 @@ export class HomePage {
 	async getGarageField(garageID, field) {
 		var results = await this.execSQL('SELECT '+field+' FROM Garage WHERE garageID = ' + garageID);
 		if(results instanceof Array) {
-			results = results.map(res => res.address);
+			results = results.map(res => res[field]);
 		}
 		else {
 			console.log('This shouldn\'t happen.');
