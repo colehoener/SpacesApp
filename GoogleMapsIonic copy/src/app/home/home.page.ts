@@ -344,7 +344,12 @@ export class HomePage {
     }
 
     map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-	 
+   
+    if(currentLocationMarkers[0] != null){
+      currentLocationMarkers[0].setMap(map);
+    }
+
+    
       this.platform.ready().then((readySource) => {
         this.openDB().then((db) => this.db=db)
         .then(() => this.initDB())
