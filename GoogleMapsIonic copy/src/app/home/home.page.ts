@@ -26,6 +26,7 @@ var currentLocationMarkers = []
 var currentLocationI = 0
 var garageMarkers = []
 var garageMarkersI = 0
+var timeout = 0
 
 //selects the applied files to interact with
 @Component({
@@ -495,8 +496,9 @@ export class HomePage {
   
   /*Given an address, this function returns the lattitude and longitude
     of the address if the address is valid*/
-    geocode(address) {
-      console.log("Addres inside geocdoe is: " + address)
+  geocode(address) {
+    timeout+=250
+    setTimeout(function(){
     geocoder.geocode( { 'address': address}, function(results, status) {
       if (status == 'OK') {	
         //declares current location marker
@@ -507,8 +509,6 @@ export class HomePage {
           anchor: new google.maps.Point(20, 40),
           scaledSize: new google.maps.Size(40, 40)
         };
-
-        console.log("Cordinates = " + results[0].geometry.location)
 
         garageMarkers[garageMarkersI] = new google.maps.Marker({
             animation: google.maps.Animation.DROP,
@@ -521,9 +521,10 @@ export class HomePage {
         garageMarkersI++
 
       } else {
-        alert('Geocode was not successful for the following reason: ' + status);
+        console.log("OVER QUERY LIMIT")
       }
     });
+  }, timeout)
   }
 
   searchBar(address){
