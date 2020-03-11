@@ -558,7 +558,7 @@ export class HomePage {
   }
 	
   async openDB() {
-    if (window.cordova.platformId === 'browser') {
+    if (!window.cordova || window.cordova.platformId === 'browser') {
       var db = await window.openDatabase('garages', '1.0', 'Data', 2*1024*1024);
       console.log('Opened DB.')
       return db;
@@ -569,7 +569,7 @@ export class HomePage {
 	  // Get 'garages.sql' text
 	  var script = await this.http.get('../../assets/garages.sql', {responseType: 'text'}).toPromise();
 	  var commands = script.split(";");
-	  if (window.cordova.platformId === 'browser') {
+	  if (!window.cordova || window.cordova.platformId === 'browser') {
 		  for (var command of commands) {
 			  await this.execSQL(command);
 		  }
