@@ -13,6 +13,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 //import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
 import { HttpClient } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
+import { Router, NavigationExtras } from '@angular/router';
 
 //const {Geolocation } = Plugins;
 
@@ -27,6 +28,7 @@ var currentLocationI = 0
 var garageMarkers = []
 var garageMarkersI = 0
 var timeout = 0
+var home;
 
 //selects the applied files to interact with
 @Component({
@@ -54,8 +56,8 @@ export class HomePage {
     
 
   //Main constructor (code goes here)
-  constructor(public platform: Platform, private geolocation: Geolocation, private http: HttpClient) {
-
+  constructor(public platform: Platform, private geolocation: Geolocation, private router: Router, private http: HttpClient) {
+        home = this;
 	}
 	
   segmentChanged(ev: any) {	
@@ -496,7 +498,7 @@ export class HomePage {
   
   /*Given an address, this function returns the lattitude and longitude
     of the address if the address is valid*/
-  geocode(address) {
+  geocode(address, id) {
     timeout+=250
     setTimeout(function(){
     geocoder.geocode( { 'address': address}, function(results, status) {
@@ -515,8 +517,25 @@ export class HomePage {
             map: map,
             position: results[0].geometry.location,
             icon : garageMarkerImage,
-            id: garageMarkersI
+            id: id
         });
+        let mark = garageMarkers[garageMarkersI];
+        mark.addListener('click', async function markerListener() {
+            console.log("clicky clicky");
+            let navExtras: NavigationExtras = {
+                state: {
+                    address: await home.getGarageAddress(mark.id),
+                    name: await home.getGarageField(mark.id, "name"),
+                    daysOpen: await home.getGarageField(mark.id, "daysOpen"),
+                    openTime: await home.getGarageField(mark.id, "openTime"),
+                    closeTime: await home.getGarageField(mark.id, "closeTime"),
+                    is24hr: await home.getGarageField(mark.id, "is24hr"),
+                    hasMonthly: await home.getGarageField(mark.id, "hasMonthly"),
+                    comments: await home.getGarageField(mark.id, "comments"),
+                }
+            };
+            home.router.navigate(['info'], navExtras);
+      });
         
         garageMarkersI++
 
@@ -553,7 +572,7 @@ export class HomePage {
 
       this.openDB().then((db) => this.db=db)
         .then(() => this.getGarageAddress(ids[i]))
-        .then((address) => this.geocode(address))
+        .then((address) => this.geocode(address, ids[i]))
         .catch(e => console.log(e));
       }
   }
@@ -610,6 +629,16 @@ export class HomePage {
 	// get address of garage
 	async getGarageAddress(garageID) {
 		var results = await this.execSQL('SELECT address FROM Garage WHERE garageID = ' + garageID);
+		if(results instanceof Array) {
+			results = results.map(res => res.address);
+		}
+		else {
+			console.log('This shouldn\'t happen.');
+		}
+		return results[0];
+	}
+	async getGarageField(garageID, field) {
+		var results = await this.execSQL('SELECT '+field+' FROM Garage WHERE garageID = ' + garageID);
 		if(results instanceof Array) {
 			results = results.map(res => res.address);
 		}
