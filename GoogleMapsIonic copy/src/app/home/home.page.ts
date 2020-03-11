@@ -406,7 +406,7 @@ export class HomePage {
   }
 
   getDistance(lat1, lng1, lat2, lng2){
-    var distanceInMeters = google.maps.geometry.spherical.computeDistanceBetween(
+    /*var distanceInMeters = google.maps.geometry.spherical.computeDistanceBetween(
       new google.maps.LatLng({
           lat: 7.099473939079819, 
           lng: -73.10677064354888
@@ -416,10 +416,21 @@ export class HomePage {
           lng: -74.07209873199463
       })
     );
-
     let distanceInMiles = distanceInMeters * 0.000621371
 
     return distanceInMiles
+    */
+    console.log(lat1, lng1, lat2, lng2);
+    var radlat1 = Math.PI * lat1/180;
+    var radlat2 = Math.PI * lat2/180;
+    var radlon1 = Math.PI * lng1/180;
+    var radlon2 = Math.PI * lng2/180;
+    var radtheta = Math.PI * (lng1-lng2)/180;
+    var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+    dist = Math.acos(dist);
+    dist = dist * 180/Math.PI;
+    dist = dist * 60 * 1.1515;
+    return Math.floor(dist*100)/100;
   }
 
   //Watches for position changes and updates current location
@@ -521,7 +532,6 @@ export class HomePage {
         });
         let mark = garageMarkers[garageMarkersI];
         mark.addListener('click', async function markerListener() {
-            console.log("clicky clicky");
             let navExtras: NavigationExtras = {
                 state: {
                     address: await home.getGarageAddress(mark.id),
@@ -532,6 +542,12 @@ export class HomePage {
                     is24hr: await home.getGarageField(mark.id, "is24hr"),
                     hasMonthly: await home.getGarageField(mark.id, "hasMonthly"),
                     comments: await home.getGarageField(mark.id, "comments"),
+                    distance: home.getDistance(
+                            home.lat || 39.955859,
+                            home.lng || -75.191336,
+                            mark.position.lat(),
+                            mark.position.lng()
+                    ),
                 }
             };
             home.router.navigate(['info'], navExtras);

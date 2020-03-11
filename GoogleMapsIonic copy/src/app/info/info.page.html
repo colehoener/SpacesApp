@@ -4,7 +4,7 @@
   	    <ion-back-button></ion-back-button>
   	</ion-buttons>
   	<ion-title>
-        Park-N-Park
+        {{ state.name }}
     </ion-title>
     <ion-buttons slot="end">
         <ion-button slot="end" [routerLink]="['/settings']">
@@ -15,28 +15,26 @@
 </ion-header>
 
 <ion-content>
-  <div class="ion-padding" *ngIf="state">
+  <div class="ion-padding">
   	<ion-grid>
   	    <ion-row>
             <ion-col>
                 <ion-label class="data-head">Address:</ion-label>
-                <ion-label #addressLabel>{{ state.address }}</ion-label>
+                <ion-label>{{ state.address }}</ion-label>
                 <br>
-                <ion-label class="data-head">Phone: </ion-label>
-                <ion-label #phoneLabel>555-555-5555</ion-label>
-                <br><br>
-                <ion-button>Website</ion-button>
-                <ion-button>Directions</ion-button>
-                <br><br>
                 <ion-label class="data-head">Posted Hours: </ion-label>
-                <ion-label #hoursLabel>24/7</ion-label>
-                <br>
-                <ion-label class="data-head">Access: </ion-label>
-                <ion-label #permitLabel>Permit required</ion-label>
+                <ion-label>
+                    {{ state.daysOpen }}
+                </ion-label><br>
+                <ion-label>
+                    {{ state.is24hr ? "24 hours" : state.openTime +"-"+ state.closeTime }}
+                </ion-label>
             </ion-col>
             <ion-col text-right>
                 <ion-icon name="pin"></ion-icon><ion-label>&nbsp;</ion-label>
-                <ion-label #distanceLabel>0.0mi</ion-label><ion-label> away</ion-label>
+                <ion-label>{{state.distance}}mi</ion-label><ion-label> away</ion-label>
+                <br>
+                <ion-button>Directions</ion-button>
             </ion-col>
   	    </ion-row>
   	    <ion-row>
@@ -90,11 +88,8 @@
                     &#9734;&#9734;&#9734;&#9734;&#9734;
                 </div><br>
             </ion-col>
-            <ion-col text-right>
-                <ion-button>Mark Full</ion-button>
-            </ion-col>
   	    </ion-row>
   	</ion-grid>
-    Data goes down here.
+    {{state.comment}}
   </div>
 </ion-content>

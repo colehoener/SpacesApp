@@ -6,6 +6,9 @@
 .data-head + ion-label {
 	margin-left: 1em;
 }
+.data-head + ion-label:not(.data-head) + br + ion-label:not(.data-head) {
+	margin-left: 1em;
+}
 
 
 .rating, .rating_after {

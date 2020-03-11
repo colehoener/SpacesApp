@@ -13,6 +13,8 @@ export class InfoPage implements OnInit {
       this.route.queryParams.subscribe(params => {
           if (this.router.getCurrentNavigation().extras.state) {
             this.state = this.router.getCurrentNavigation().extras.state;
+          } else {
+          	this.router.navigate(['/home']);
           }
       });
   }
