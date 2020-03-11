@@ -24,6 +24,8 @@ var searchBarMarkers = []
 var searchBarI = 0
 var currentLocationMarkers = []
 var currentLocationI = 0
+var garageMarkers = []
+var garageMarkersI = 0
 
 //selects the applied files to interact with
 @Component({
@@ -61,13 +63,14 @@ export class HomePage {
 
   //On startup of homepage this runs
   ionViewWillEnter() {
-	  this.openDB().then((db) => this.db=db)
+    this.platform.ready().then((readySource) => {
+	  /*this.openDB().then((db) => this.db=db)
 		  .then(() => this.initDB())
 		  .then(() => this.getGarageIds())
 		  .then((ids) => this.getGarageAddress(ids[0]))
 		  .then((address) => console.log('Address: ' + address))
-      .catch(e => console.log(e));
-      
+      .catch(e => console.log(e));*/
+    });
     let latLng = new google.maps.LatLng(39.9566, -75.1899);
 	  this.loadMap(latLng);
   }
@@ -338,19 +341,20 @@ export class HomePage {
     }
 
     map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-	  
-    let latLng2 = new google.maps.LatLng(39.9566, -75.1899);	
-    this.addMarker("Test", latLng2)	
-
-   // var garageIDS = this.getGarageIds()
-   // console.log(garageIDS[0])
+	 
+      this.platform.ready().then((readySource) => {
+        this.openDB().then((db) => this.db=db)
+        .then(() => this.initDB())
+        .then(() => this.getGarageIds())
+        .then((ids) => this.displayGarages(ids))
+      });
   }	
 
   //Gets the users current location. Displays it on the map and zooms to the location	
   getUserLocation(){	
     console.log("Ran getuserLocation()")	
     this.platform.ready().then((readySource) => {
-
+      var garageIDS = this.getGarageIds()
       var geo_options = {
         enableHighAccuracy: true, 
         maximumAge        : 30000, 
@@ -491,10 +495,31 @@ export class HomePage {
   
   /*Given an address, this function returns the lattitude and longitude
     of the address if the address is valid*/
-  geocode(address) {
+    geocode(address) {
+      console.log("Addres inside geocdoe is: " + address)
     geocoder.geocode( { 'address': address}, function(results, status) {
-      if (status == 'OK') {
-            return results[0].geometry.location	
+      if (status == 'OK') {	
+        //declares current location marker
+        var garageMarkerImage = {
+          url: '/assets/garage_icon.png',
+          size: new google.maps.Size(40, 40),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(20, 40),
+          scaledSize: new google.maps.Size(40, 40)
+        };
+
+        console.log("Cordinates = " + results[0].geometry.location)
+
+        garageMarkers[garageMarkersI] = new google.maps.Marker({
+            animation: google.maps.Animation.DROP,
+            map: map,
+            position: results[0].geometry.location,
+            icon : garageMarkerImage,
+            id: garageMarkersI
+        });
+        
+        garageMarkersI++
+
       } else {
         alert('Geocode was not successful for the following reason: ' + status);
       }
@@ -519,12 +544,17 @@ export class HomePage {
       }
 	});
   }
-	  
-  displayGarages(garagesAddresses, key){
-    for(let i = 0; i < garagesAddresses.length(); i++){
-      let cordinates = this.geocode(garagesAddresses[i])
-      this.addMarker(key[i], cordinates)
-    }
+  
+  //Fetchs the garages from the database and translates them into cordinates,
+  //then places the pins on
+  displayGarages(ids){
+    for(let i = 0; i < ids.length; i++){
+
+      this.openDB().then((db) => this.db=db)
+        .then(() => this.getGarageAddress(ids[i]))
+        .then((address) => this.geocode(address))
+        .catch(e => console.log(e));
+      }
   }
 	
   async openDB() {
@@ -571,7 +601,8 @@ export class HomePage {
 		}
 		else {
 			console.log('This shouldn\'t happen.');
-		}
+    }
+    
 		return results;
 	}
 
