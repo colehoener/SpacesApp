@@ -349,7 +349,9 @@ export class HomePage {
         this.openDB().then((db) => this.db=db)
         .then(() => this.initDB())
         .then(() => this.getGarageIds())
-        .then((ids) => this.displayGarages(ids))
+		.then((ids) => this.displayGarages(ids))
+			  .then(() => this.getGarageCurrentPrice(1))
+			  .then((r) => console.log(r));
       });
   }	
 
@@ -637,6 +639,7 @@ export class HomePage {
 		}
 		return results[0];
 	}
+	
 	async getGarageField(garageID, field) {
 		var results = await this.execSQL('SELECT '+field+' FROM Garage WHERE garageID = ' + garageID);
 		if(results instanceof Array) {
@@ -647,6 +650,64 @@ export class HomePage {
 		}
 		return results[0];
 	}
+	
+	// returns a list of 2-element arrays where the first element of each array is the maxDuration
+	// for that price in minutes and the second element is the price. For instance ([60, 10], [120, 15])
+	// means that the price is $10 for up to 60 minutes and $15 for 61-120 minutes. A maxDuration of 0
+	// denotes a flat rate.
+	async getGarageCurrentPrice(garageID) {
+		var days = {0:'Su', 1:'M', 2:'T', 3:'W', 4:'Th', 5:'F', 6:'Sa'};
+		var now = new Date();
+		var weekday = days[now.getDay()];
+		var time = addZero(now.getHours()) + ':' + addZero(now.getMinutes()) + ':' + addZero(now.getSeconds());
+		console.log(time);
+		// find out if there's a special now
+		var specials = await this.execSQL('SELECT * FROM Pricing WHERE garageID = ' + garageID + ' AND isSpecial=1');
+		var pricingIDs = [];
+		if(specials instanceof Array) {
+			for (var s of specials) {
+				if(s.specialDays.includes(weekday) && time < s.specialEndTime) {
+					// check specialStartTime for "before"
+					if(s.specialStartTime.includes("before")) {
+						var sst = s.specialStartTime.split(' ');
+						if(time < sst[1]) {
+							// this special applies to us, grab the pricingID
+							pricingIDs.push(s.pricingID);
+						}
+					}
+					else {
+						if(time > s.specialStartTime) {
+							pricingIDs.push(s.pricingID);
+						}
+					}
+				}
+			}
+		}
+		if(pricingIDs.length == 0) {
+			// there wasn't a special. get regular pricing.
+			var regs = await this.execSQL('SELECT * FROM Pricing WHERE garageID = ' + garageID + ' AND isSpecial=0');
+			if(regs instanceof Array) {
+				for(var r of regs) {
+					pricingIDs.push(r.pricingID);
+				}
+			}
+		}
+		// for each valid pricing, grab the record, check if it's flat rate or not, convert into returnable form.
+		var retVal = []
+		for(var id in pricingIDs) {
+			var pricings = await this.execSQL('SELECT * FROM Pricing WHERE pricingID = ' + id);
+			if(pricings instanceof Array) {
+				for(var p of pricings) {
+					if(p.isFlatRate == 1)
+						retVal.push([0, p.price]);
+					else
+						retVal.push([p.maxDuration, p.price]);
+				}
+			}
+		}
+		return retVal;
+	}
+
 
 	//exec Sql callback wrapper
 	async execSQL(command) {
@@ -673,4 +734,11 @@ export class HomePage {
 		
 	}
 
+}
+
+function addZero(n) {
+	if (n < 10) {
+		return "0" + n;
+	}
+	return n;
 }
