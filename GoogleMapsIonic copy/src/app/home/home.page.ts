@@ -13,7 +13,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 //import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
 import { HttpClient } from '@angular/common/http';
 import { Platform } from '@ionic/angular';
-import { Router, NavigationExtras } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 
 //const {Geolocation } = Plugins;
 
@@ -29,6 +29,7 @@ var garageMarkers = []
 var garageMarkersI = 0
 var timeout = 0
 var home;
+const DB_DEBUG = false;
 
 //selects the applied files to interact with
 @Component({
@@ -56,8 +57,19 @@ export class HomePage {
     
 
   //Main constructor (code goes here)
-  constructor(public platform: Platform, private geolocation: Geolocation, private router: Router, private http: HttpClient) {
+  constructor(private route: ActivatedRoute, public platform: Platform, private geolocation: Geolocation, private router: Router, private http: HttpClient) {
         home = this;
+        this.route.queryParams.subscribe(params => {
+              if (this.router.getCurrentNavigation().extras.state) {
+                //do the directions
+                for (let x of garageMarkers) {
+                    if (x.id == this.router.getCurrentNavigation().extras.state.id) {
+                        this.directions(x.position);
+                        break;
+                    }
+                }
+              }
+        });
 	}
 	
   segmentChanged(ev: any) {	
@@ -539,6 +551,7 @@ export class HomePage {
         mark.addListener('click', async function markerListener() {
             let navExtras: NavigationExtras = {
                 state: {
+                    id: id,
                     address: await home.getGarageAddress(mark.id),
                     name: await home.getGarageField(mark.id, "name"),
                     daysOpen: await home.getGarageField(mark.id, "daysOpen"),
@@ -641,7 +654,7 @@ export class HomePage {
 			results = results.map(res => res.garageID);
 		}
 		else {
-			console.log('This shouldn\'t happen.');
+			if (DB_DEBUG) console.log('This shouldn\'t happen.');
     }
     
 		return results;
@@ -654,7 +667,7 @@ export class HomePage {
 			results = results.map(res => res.address);
 		}
 		else {
-			console.log('This shouldn\'t happen.');
+			if (DB_DEBUG) console.log('This shouldn\'t happen.');
 		}
 		return results[0];
 	}
@@ -664,7 +677,7 @@ export class HomePage {
 			results = results.map(res => res[field]);
 		}
 		else {
-			console.log('This shouldn\'t happen.');
+			if (DB_DEBUG) console.log('This shouldn\'t happen.');
 		}
 		return results[0];
 	}
@@ -675,19 +688,19 @@ export class HomePage {
 		return new Promise(function(resolve, reject) {
 			var data = [];
 			db.transaction(function(tx) {
-				console.log(command);
+				if (DB_DEBUG) console.log(command);
 				tx.executeSql(command, [], function(tx, results) {
 					for (var i = 0; i < results.rows.length; i++) {
 						data.push(results.rows.item(i));
 					}
 				}, function(tx, error) {
-					console.log('SQL ERROR: ' + error.message);
+					if (DB_DEBUG) console.log('SQL ERROR: ' + error.message);
 				});
 			}, function(error) {
-				console.log('Transaction ERROR: ' + error.message);
+				if (DB_DEBUG) console.log('Transaction ERROR: ' + error.message);
 				reject(error);
 			}, function() {
-				console.log('Transaction executed.');
+				if (DB_DEBUG) console.log('Transaction executed.');
 				resolve(data);
 			});
 		});

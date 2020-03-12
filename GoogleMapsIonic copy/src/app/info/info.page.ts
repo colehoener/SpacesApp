@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef } from '@angular/core';
 import { NavController,AlertController,PopoverController } from '@ionic/angular';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 
 @Component({
   selector: 'app-info',
@@ -18,8 +18,11 @@ export class InfoPage implements OnInit {
           }
       });
   }
-
   ngOnInit() {
     
+  }
+  onDirect() {
+    let navExtras: NavigationExtras = {state: {id: this.state.id}};
+    this.router.navigate(['/home'], navExtras);
   }
 }
