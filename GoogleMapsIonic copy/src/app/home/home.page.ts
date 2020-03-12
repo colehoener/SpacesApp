@@ -349,9 +349,9 @@ export class HomePage {
         this.openDB().then((db) => this.db=db)
         .then(() => this.initDB())
         .then(() => this.getGarageIds())
-		.then((ids) => this.displayGarages(ids))
-			  .then(() => this.getGarageCurrentPrice(1))
-			  .then((r) => console.log(r));
+		.then((ids) => this.displayGarages(ids));
+		  //		  .then(() => this.getGarageCurrentPrice(1))
+		  //  .then((r) => console.log(r));
       });
   }	
 
