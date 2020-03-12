@@ -408,7 +408,7 @@ export class HomePage {
       };
 
       //Sets current location marker
-      currentLocationMarkers[0] = new google.maps.Marker({
+      currentLocationMarkers[currentLocationI] = new google.maps.Marker({
         map: map,
         position: latLng,
         icon : userMarkerImage
@@ -494,18 +494,17 @@ export class HomePage {
 
   //Gets directions to the given endpoint (lattitude and longitude) from current location
   directions(endPoint){
+    setTimeout(function(){
     console.log(endPoint)
     var directionsService = new google.maps.DirectionsService();
 
     var directionsRenderer = new google.maps.DirectionsRenderer({polylineOptions: {
       strokeColor: "red"}, suppressMarkers: true});
 
-    let start = new google.maps.LatLng(this.lat, this.lng)
-
     directionsRenderer.setMap(map);
 
     var request = {
-      origin: start,
+      origin: currentLocationMarkers[currentLocationI - 1].getPosition(),
       destination: endPoint,
       travelMode: 'DRIVING'
     };
@@ -516,6 +515,7 @@ export class HomePage {
         console.log("Ran directions")
       }
     });
+  }, 1500)
   }
 
   //Adds a marker to the map given the position as lattitude and longitude
