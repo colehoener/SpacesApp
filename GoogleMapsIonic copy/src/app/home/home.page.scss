@@ -1,8 +1,11 @@
 #map{
-    height: 50%;
+    height: 89%;
     width: 100%;
 }
 #listView ion-label[item-right] {
 	color: var(--ion-color-medium);
 	text-align: right;
+}
+#listView ion-label {
+	overflow: visible;
 }

@@ -11,19 +11,9 @@
 
 <ion-content>
     <ion-list>
-      <ion-item>
-        <ion-label>Pepperoni</ion-label>
-        <ion-toggle></ion-toggle>
-      </ion-item>
-
-      <ion-item>
-        <ion-label>Sausage</ion-label>
-        <ion-toggle checked></ion-toggle>
-      </ion-item>
-
-      <ion-item>
-        <ion-label>Mushrooms</ion-label>
-        <ion-toggle></ion-toggle>
+      <ion-item *ngFor="let setting of settings;">
+        <ion-label>{{setting[0]}}</ion-label>
+        <ion-toggle [checked] = "setting[1]"(ionChange) = "setting[2]($event)"></ion-toggle>
       </ion-item>
 
       <ion-item>

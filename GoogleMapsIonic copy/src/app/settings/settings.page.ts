@@ -9,6 +9,12 @@ import {AboutPage} from '../about/about.page';
 })
 export class SettingsPage implements OnInit {
 
+  settings = [
+  	["Bugs", true, function() {
+  		location.href = "/home"
+  	}]
+  ];
+
   constructor(private popCtrl:PopoverController) {}
   
   async openAbout(ev: any)
