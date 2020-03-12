@@ -78,6 +78,8 @@ export class HomePage {
 
   //On startup of homepage this runs
   ionViewWillEnter() {
+    console.log(timeout)
+    console.log(garageMarkersI)
     this.platform.ready().then((readySource) => {
 	  /*this.openDB().then((db) => this.db=db)
 		  .then(() => this.initDB())
@@ -357,17 +359,24 @@ export class HomePage {
 
     map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
    
-    if(currentLocationMarkers[0] != null){
-      currentLocationMarkers[0].setMap(map);
+    if(currentLocationMarkers[currentLocationI - 1] != null){
+      currentLocationMarkers[currentLocationI - 1].setMap(map);
+      map.setCenter(currentLocationMarkers[currentLocationI - 1].position)
     }
 
-    
+    if(garageMarkers[13] == null){
       this.platform.ready().then((readySource) => {
         this.openDB().then((db) => this.db=db)
         .then(() => this.initDB())
         .then(() => this.getGarageIds())
         .then((ids) => this.displayGarages(ids))
       });
+    }
+    else{
+      for(let i = 0; i < garageMarkersI; i++){
+        garageMarkers[i].setMap(map);
+      }
+    }
   }	
 
   //Gets the users current location. Displays it on the map and zooms to the location	
@@ -485,8 +494,9 @@ export class HomePage {
 
   //Gets directions to the given endpoint (lattitude and longitude) from current location
   directions(endPoint){
-
+    console.log(endPoint)
     var directionsService = new google.maps.DirectionsService();
+
     var directionsRenderer = new google.maps.DirectionsRenderer({polylineOptions: {
       strokeColor: "red"}, suppressMarkers: true});
 
@@ -580,6 +590,7 @@ export class HomePage {
   }, timeout)
   }
 
+  //Geocodes the address typed in the search bar and diaplays it on the map
   searchBar(address){
     if(searchBarI > 0){
       searchBarMarkers[searchBarI - 1].setMap(null)
