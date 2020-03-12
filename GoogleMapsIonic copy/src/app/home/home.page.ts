@@ -54,6 +54,7 @@ export class HomePage {
   map: any;
   markers = [];
   db: any;
+  garageNames = [];
     
 
   //Main constructor (code goes here)
@@ -541,7 +542,7 @@ export class HomePage {
   geocode(address, id) {
     timeout+=250
     setTimeout(function(){
-    geocoder.geocode( { 'address': address}, function(results, status) {
+    geocoder.geocode( { 'address': address+", Philadelphia, PA"}, function(results, status) {
       if (status == 'OK') {	
         //declares current location marker
         var garageMarkerImage = {
@@ -551,7 +552,6 @@ export class HomePage {
           anchor: new google.maps.Point(20, 40),
           scaledSize: new google.maps.Size(40, 40)
         };
-
         garageMarkers[garageMarkersI] = new google.maps.Marker({
             animation: google.maps.Animation.DROP,
             map: map,
@@ -559,8 +559,10 @@ export class HomePage {
             icon : garageMarkerImage,
             id: id
         });
+        
+        
         let mark = garageMarkers[garageMarkersI];
-        mark.addListener('click', async function markerListener() {
+        let listen = async function markerListener() {
             let navExtras: NavigationExtras = {
                 state: {
                     id: id,
@@ -572,6 +574,7 @@ export class HomePage {
                     is24hr: await home.getGarageField(mark.id, "is24hr"),
                     hasMonthly: await home.getGarageField(mark.id, "hasMonthly"),
                     comments: await home.getGarageField(mark.id, "comments"),
+                    price: await home.getGarageCurrentPrice(mark.id),
                     distance: home.getDistance(
                             home.lat || 39.955859,
                             home.lng || -75.191336,
@@ -581,8 +584,26 @@ export class HomePage {
                 }
             };
             home.router.navigate(['info'], navExtras);
-      });
-        
+        }
+        mark.addListener('click', listen);
+        let found = false;
+        for (let gar of home.garageNames) {
+            if (gar[0] == id) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            let temp = garageMarkersI;
+            home.getGarageField(id, "name").then(function(name) {
+                home.garageNames[temp] = [id, name, home.getDistance(
+                    home.lat || 39.955859,
+                    home.lng || -75.191336,
+                    mark.position.lat(),
+                    mark.position.lng()
+                ), listen];
+            })
+        }
         garageMarkersI++
 
       } else {

@@ -3,13 +3,12 @@
 	font-weight: bold;
 	display: block;
 }
-.data-head + ion-label {
+ion-label:not(.data-head):not(.noindent) {
 	margin-left: 1em;
 }
-.data-head + ion-label:not(.data-head) + br + ion-label:not(.data-head) {
-	margin-left: 1em;
+ion-label.brafter {
+	display: block;
 }
-
 
 .rating, .rating_after {
 	font-size: min(8vw,40px);

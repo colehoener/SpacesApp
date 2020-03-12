@@ -28,11 +28,15 @@
                 </ion-label><br>
                 <ion-label>
                     {{ state.is24hr ? "24 hours" : state.openTime +"-"+ state.closeTime }}
+                </ion-label><br>
+                <ion-label class="data-head">Current Price: </ion-label>
+                <ion-label class="brafter" *ngFor="let cost of state.price;">
+                    Up to {{cost[0] > 120 ? ""+cost[0]/120+"hr" : ""+cost[0]+"min"}}: ${{cost[1]}}
                 </ion-label>
             </ion-col>
             <ion-col text-right>
                 <ion-icon name="pin"></ion-icon><ion-label>&nbsp;</ion-label>
-                <ion-label>{{state.distance}}mi</ion-label><ion-label> away</ion-label>
+                <ion-label class="noindent">{{state.distance}}mi</ion-label><ion-label class="noindent"> away</ion-label>
                 <br>
                 <ion-button (click) = "onDirect()">Directions</ion-button>
             </ion-col>

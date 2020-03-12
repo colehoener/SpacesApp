@@ -24,7 +24,9 @@
     </ion-segment>
   </div>
     <div [hidden] = "!mapOpen" #map id="map"></div>
-    <div [hidden] = "mapOpen" #listView id="listView">
-        List view goes here.
-    </div>
+    <ion-list [hidden] = "mapOpen" #listView id="listView">
+        <ion-item *ngFor="let garage of garageNames;" (click) = "(garage[3])()">
+            <ion-label>{{ garage[1] }}</ion-label> <ion-label text-right item-right>{{ garage[2] }}mi</ion-label>
+        </ion-item>
+    </ion-list>
 </ion-content>
